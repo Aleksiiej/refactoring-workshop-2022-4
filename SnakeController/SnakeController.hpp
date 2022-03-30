@@ -7,6 +7,7 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "Segments.hpp"
 
 class Event;
 class IPort;
@@ -21,18 +22,6 @@ struct ConfigurationError : std::logic_error
 struct UnexpectedEventException : std::runtime_error
 {
     UnexpectedEventException();
-};
-
-class Segments
-{
-    friend class Controller;
-
-    struct Segment
-    {
-        int x;
-        int y;
-    };
-
 };
 
 class Controller : public IEventHandler
@@ -53,12 +42,6 @@ private:
 
     std::pair<int, int> m_mapDimension;
     std::pair<int, int> m_foodPosition;
-
-    // struct Segment
-    // {
-    //     int x;
-    //     int y;
-    // };
 
     std::list<Segments::Segment> m_segments;
     Direction m_currentDirection;
