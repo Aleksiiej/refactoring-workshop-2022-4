@@ -23,8 +23,21 @@ struct UnexpectedEventException : std::runtime_error
     UnexpectedEventException();
 };
 
+class Segments
+{
+    friend class Controller;
+
+    struct Segment
+    {
+        int x;
+        int y;
+    };
+
+};
+
 class Controller : public IEventHandler
 {
+    friend class Segments;
 public:
     Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config);
 
@@ -41,13 +54,13 @@ private:
     std::pair<int, int> m_mapDimension;
     std::pair<int, int> m_foodPosition;
 
-    struct Segment
-    {
-        int x;
-        int y;
-    };
+    // struct Segment
+    // {
+    //     int x;
+    //     int y;
+    // };
 
-    std::list<Segment> m_segments;
+    std::list<Segments::Segment> m_segments;
     Direction m_currentDirection;
 
     void handleTimeoutInd();
@@ -57,10 +70,10 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    Segments::Segment calculateNewHead() const;
+    void updateSegmentsIfSuccessfullMove(Segments::Segment const& newHead);
+    void addHeadSegment(Segments::Segment const& newHead);
+    void removeTailSegmentIfNotScored(Segments::Segment const& newHead);
     void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
@@ -71,5 +84,7 @@ private:
 
     bool m_paused;
 };
+
+
 
 } // namespace Snake

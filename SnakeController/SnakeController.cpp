@@ -53,7 +53,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         istr >> length;
 
         while (length--) {
-            Segment seg;
+            Segments::Segment seg;
             istr >> seg.x >> seg.y;
             m_segments.push_back(seg);
         }
@@ -119,11 +119,11 @@ bool perpendicular(Direction dir1, Direction dir2)
 }
 } // namespace
 
-Controller::Segment Controller::calculateNewHead() const
+Segments::Segment Controller::calculateNewHead() const
 {
-    Segment const& currentHead = m_segments.front();
+    Segments::Segment const& currentHead = m_segments.front();
 
-    Segment newHead;
+    Segments::Segment newHead;
     newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
     newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
 
@@ -143,7 +143,7 @@ void Controller::removeTailSegment()
     m_segments.pop_back();
 }
 
-void Controller::addHeadSegment(Segment const& newHead)
+void Controller::addHeadSegment(Segments::Segment const& newHead)
 {
     m_segments.push_front(newHead);
 
@@ -155,7 +155,7 @@ void Controller::addHeadSegment(Segment const& newHead)
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
 }
 
-void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
+void Controller::removeTailSegmentIfNotScored(Segments::Segment const& newHead)
 {
     if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
         m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
@@ -165,7 +165,7 @@ void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
     }
 }
 
-void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
+void Controller::updateSegmentsIfSuccessfullMove(Segments::Segment const& newHead)
 {
     if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
